@@ -1,17 +1,43 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { actionCreators }  from './store';
+import { CSSTransition } from 'react-transition-group';
 import {
-    HeaderWrapper
+    HeaderWrapper,
+    Logo,
+    Nav,
+    NavItem,
+    SearchWrapper,
+    NavSearch
 } from './style';
 
 class Header extends Component {
     render () {
-        const { test, handleChangeTest} = this.props;
+        const {focused, list, handleInputBlur, handleInputFocused} = this.props;
         return (
             <HeaderWrapper>
-                <div>{test}</div>
-                <button onClick={handleChangeTest}>改变</button>
+                <Logo />
+                <Nav>
+                    <NavItem className='left active'>业绩排行</NavItem>
+                    <NavItem className='left'>定投排行</NavItem>
+                    <NavItem className='left'>估值排行</NavItem>
+                    <NavItem className='right'>注册</NavItem>
+                    <NavItem className='right'>登录</NavItem>
+                    <SearchWrapper>
+                        <CSSTransition
+                            in={focused}
+                            timeout={200}
+                            classNames="slide"
+                        >
+                            <NavSearch 
+                                className={focused ? 'focused' : ''}
+                                onFocus={()=> {handleInputFocused(list)}}
+                                onBlur={handleInputBlur}
+                            ></NavSearch>
+                        </CSSTransition>
+                        {/* {this.getListArea()} */}
+                    </SearchWrapper>
+                </Nav>
             </HeaderWrapper>
         )
     }
@@ -19,14 +45,18 @@ class Header extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        test: state.getIn(['header', 'test'])
+        focused: state.getIn(['header', 'focused']),
+        list: state.getIn(['header', 'list'])
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        handleChangeTest () {
-            dispatch(actionCreators.changeTest());
+        handleInputFocused(list) {
+
+        },
+        handleInputBlur () {
+
         }
     }
 }
